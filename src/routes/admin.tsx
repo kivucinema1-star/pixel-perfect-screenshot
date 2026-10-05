@@ -167,14 +167,14 @@ function Dashboard({ email }: { email: string }) {
 /* ---------- uploads ---------- */
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 async function uploadImage(file: File): Promise<string | null> {
-  if (!ALLOWED.includes(file.type)) { toast.error("Use JPG, PNG, WEBP or GIF"); return; } return null; }
-  if (file.size > 5 * 1024 * 1024) { toast.error("Max file size is 5MB"); return; } return null; }
+  if (!ALLOWED.includes(file.type)) { toast.error("Use JPG, PNG, WEBP or GIF"); return null; }
+  if (file.size > 5 * 1024 * 1024) { toast.error("Max file size is 5MB"); return null; }
   const ext = file.type.split("/")[1];
   const path = `${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("media").upload(path, file, { contentType: file.type });
-  if (error) { toast.error("Upload failed"); return; } return null; }
+  if (error) { toast.error("Upload failed"); return null; }
   const { data, error: sErr } = await supabase.storage.from("media").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-  if (sErr || !data) { toast.error("Upload failed"); return; } return null; }
+  if (sErr || !data) { toast.error("Upload failed"); return null; }
   return data.signedUrl;
 }
 
