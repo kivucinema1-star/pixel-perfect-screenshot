@@ -8,9 +8,12 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // Public (publishable) backend config — safe to ship. Fallbacks keep external hosts
 // (e.g. Vercel) working when their env vars are not configured.
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || "https://maargloqrrxapcibuaol.supabase.co";
+const SUPABASE_URL = process.env["VITE_SUPABASE_URL"] || "https://maargloqrrxapcibuaol.supabase.co";
 const SUPABASE_KEY =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_uNG_KR7Ve9adV5bRAM1jgQ_QgGLaO8x";
+  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || "sb_publishable_uNG_KR7Ve9adV5bRAM1jgQ_QgGLaO8x";
+
+process.env["VITE_SUPABASE_URL"] = SUPABASE_URL;
+process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] = SUPABASE_KEY;
 
 export default defineConfig({
   tanstackStart: {
