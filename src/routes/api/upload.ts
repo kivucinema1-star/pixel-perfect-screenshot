@@ -11,6 +11,18 @@ export const Route = createFileRoute("/api/upload")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        try {
+          return await handle(request);
+        } catch (e) {
+          console.error("Upload route crashed", e);
+          return fail("Upload failed on the server. Please try again.", 500);
+        }
+      },
+    },
+  },
+});
+
+async function handle(request: Request): Promise<Response> {
         const token = request.headers.get("authorization")?.replace(/^Bearer /, "");
         if (!token) return fail("Please sign in again.", 401);
 
@@ -45,7 +57,7 @@ export const Route = createFileRoute("/api/upload")({
 
         const cloud = process.env["CLOUDINARY_CLOUD_NAME"];
         const preset = process.env["CLOUDINARY_UPLOAD_PRESET"];
-        if (!cloud || !preset) return fail("Upload is not configured.", 500);
+        if (!cloud || !preset) return fail("Upload is not configured on the server (missing Cloudinary settings).", 500);
 
         const body = new FormData();
         body.append("file", file);
@@ -59,7 +71,4 @@ export const Route = createFileRoute("/api/upload")({
         const json = (await res.json()) as { secure_url?: string };
         if (!json.secure_url) return fail("Upload failed. Please try again.", 502);
         return Response.json({ url: json.secure_url });
-      },
-    },
-  },
-});
+      }
