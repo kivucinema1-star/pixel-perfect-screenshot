@@ -55,8 +55,8 @@ async function handle(request: Request): Promise<Response> {
         if (!ALLOWED.includes(file.type)) return fail("Only JPG, PNG or WEBP images are allowed.", 400);
         if (file.size > MAX) return fail("Image is too large (max 5MB).", 400);
 
-        const cloud = process.env["CLOUDINARY_CLOUD_NAME"];
-        const preset = process.env["CLOUDINARY_UPLOAD_PRESET"];
+        const cloud = process.env["CLOUDINARY_CLOUD_NAME"] || "hqwida6q";
+        const preset = process.env["CLOUDINARY_UPLOAD_PRESET"] || "clipset";
         if (!cloud || !preset) return fail("Upload is not configured on the server (missing Cloudinary settings).", 500);
 
         const body = new FormData();
