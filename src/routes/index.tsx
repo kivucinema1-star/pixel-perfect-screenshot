@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import { getSiteData, type SiteData } from "@/lib/site.functions";
 import { toEmbedUrl } from "@/lib/sanitize";
-import logoAsset from "@/assets/clipset-logo.png.asset.json";
 
 const siteQuery = queryOptions({ queryKey: ["site"], queryFn: () => getSiteData() });
 
@@ -18,6 +17,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Clipset Production crafts cinematic films, commercials and brand stories." },
       { property: "og:title", content: "Clipset Production — Creative Film Production Agency" },
       { property: "og:description", content: "Clipset Production crafts cinematic films, commercials and brand stories." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(siteQuery),
@@ -91,7 +92,16 @@ function Header({ data }: { data: SiteData }) {
     <header className="sticky top-0 z-40 border-b border-border bg-background/70 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
         <a href="#home" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-          <img src={logoAsset.url} alt={s.logo_text || "Logo"} className="h-10 w-auto" />
+          <img
+            src="/clipset-logo.webp"
+            alt={s.logo_text || "Logo"}
+            width={91}
+            height={128}
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+            className="h-10 w-auto"
+          />
           {s.logo_text}
           {s.logo_text && <span className="text-primary">.</span>}
         </a>
