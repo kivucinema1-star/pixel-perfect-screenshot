@@ -92,12 +92,12 @@ function ChangePassword({ userId, onDone }: { userId: string; onDone: () => void
   const [busy, setBusy] = useState(false);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 10) return toast.error("Use at least 10 characters");
-    if (pw !== pw2) return toast.error("Passwords don't match");
-    if (pw === current) return toast.error("Choose a new password");
+    if (pw.length < 10) { toast.error("Use at least 10 characters"); return; }
+    if (pw !== pw2) { toast.error("Passwords don't match"); return; }
+    if (pw === current) { toast.error("Choose a new password"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: pw, current_password: current } as { password: string });
-    if (error) { setBusy(false); return toast.error(error.message); }
+    if (error) { setBusy(false); toast.error(error.message); return; }
     await supabase.from("user_roles").update({ must_change_password: false }).eq("user_id", userId);
     toast.success("Password updated");
     onDone();
@@ -167,14 +167,14 @@ function Dashboard({ email }: { email: string }) {
 /* ---------- uploads ---------- */
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 async function uploadImage(file: File): Promise<string | null> {
-  if (!ALLOWED.includes(file.type)) { toast.error("Use JPG, PNG, WEBP or GIF"); return null; }
-  if (file.size > 5 * 1024 * 1024) { toast.error("Max file size is 5MB"); return null; }
+  if (!ALLOWED.includes(file.type)) { toast.error("Use JPG, PNG, WEBP or GIF"); return; } return null; }
+  if (file.size > 5 * 1024 * 1024) { toast.error("Max file size is 5MB"); return; } return null; }
   const ext = file.type.split("/")[1];
   const path = `${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from("media").upload(path, file, { contentType: file.type });
-  if (error) { toast.error("Upload failed"); return null; }
+  if (error) { toast.error("Upload failed"); return; } return null; }
   const { data, error: sErr } = await supabase.storage.from("media").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-  if (sErr || !data) { toast.error("Upload failed"); return null; }
+  if (sErr || !data) { toast.error("Upload failed"); return; } return null; }
   return data.signedUrl;
 }
 
@@ -228,26 +228,26 @@ function CollectionEditor({ table, fields, empty }: { table: Table; fields: Fiel
   async function add() {
     const next = rows?.length ? Math.max(...rows.map((r) => r.sort_order)) + 1 : 0;
     const { error } = await supabase.from(table).insert({ sort_order: next } as never);
-    if (error) return toast.error("Failed to add");
+    if (error) { toast.error("Failed to add"); return; }
     load();
   }
   async function save(row: Row) {
     const { error } = await supabase.from(table).update(cleanRow(fields, row) as never).eq("id", row.id);
-    if (error) return toast.error("Failed to save");
+    if (error) { toast.error("Failed to save"); return; }
     toast.success("Saved");
     load();
   }
   async function remove(id: string) {
     if (!confirm("Delete this item?")) return;
     const { error } = await supabase.from(table).delete().eq("id", id);
-    if (error) return toast.error("Failed to delete");
+    if (error) { toast.error("Failed to delete"); return; }
     load();
   }
   async function reorder(from: number, to: number) {
     if (!rows || from === to) return;
     const next = [...rows];
     const [m] = next.splice(from, 1);
-    next.splice(to, 0, m);
+    next.splice(to, 0, m!);
     setRows(next.map((r, i) => ({ ...r, sort_order: i })));
     const results = await Promise.all(next.map((r, i) => supabase.from(table).update({ sort_order: i } as never).eq("id", r.id)));
     if (results.some((r) => r.error)) toast.error("Failed to save order");
@@ -343,7 +343,7 @@ function HeroEditor() {
       headline: cleanText(h.headline, 200), subtext: cleanText(h.subtext, 600),
       cta1_label: cleanText(h.cta1_label, 40), cta1_link: cleanUrl(h.cta1_link),
       cta2_label: cleanText(h.cta2_label, 40), cta2_link: cleanUrl(h.cta2_link),
-      stats: h.stats.slice(0, 3).map((s) => ({ value: cleanText(s.value ?? "", 20), label: cleanText(s.label ?? "", 40) })),
+      stats: h.stats.slice(0, 3).map((s) => ({ value: cleanText(s["value"] ?? "", 20), label: cleanText(s["label"] ?? "", 40) })),
       updated_at: new Date().toISOString(),
     }).eq("id", 1);
     error ? toast.error("Failed to save") : toast.success("Hero saved");
@@ -380,11 +380,11 @@ function SettingsEditor() {
   async function save() {
     if (!s) return;
     const email = cleanText(s.email, 200);
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast.error("Invalid email");
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast.error("Invalid email"); return; }
     const { error } = await supabase.from("site_settings").update({
       logo_text: cleanText(s.logo_text, 60),
-      nav_items: s.nav_items.map((n) => ({ label: cleanText(n.label ?? "", 30), href: cleanUrl(n.href ?? "") })).filter((n) => n.label),
-      social_links: s.social_links.map((n) => ({ platform: cleanText(n.platform ?? "", 30), url: cleanUrl(n.url ?? "") })).filter((n) => n.url),
+      nav_items: s.nav_items.map((n) => ({ label: cleanText(n["label"] ?? "", 30), href: cleanUrl(n["href"] ?? "") })).filter((n) => n.label),
+      social_links: s.social_links.map((n) => ({ platform: cleanText(n["platform"] ?? "", 30), url: cleanUrl(n["url"] ?? "") })).filter((n) => n.url),
       cta_heading: cleanText(s.cta_heading, 200), cta_subtext: cleanText(s.cta_subtext, 600),
       whatsapp: cleanText(s.whatsapp, 30).replace(/[^\d+\s]/g, ""), email,
       footer_text: cleanText(s.footer_text, 400), copyright_text: cleanText(s.copyright_text, 200),
