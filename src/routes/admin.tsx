@@ -165,17 +165,24 @@ function Dashboard({ email }: { email: string }) {
 }
 
 /* ---------- uploads ---------- */
-const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
+// Reusable: every admin image field uploads through POST /api/upload (Cloudinary).
 async function uploadImage(file: File): Promise<string | null> {
-  if (!ALLOWED.includes(file.type)) { toast.error("Use JPG, PNG, WEBP or GIF"); return null; }
-  if (file.size > 5 * 1024 * 1024) { toast.error("Max file size is 5MB"); return null; }
-  const ext = file.type.split("/")[1];
-  const path = `${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from("media").upload(path, file, { contentType: file.type });
-  if (error) { toast.error("Upload failed"); return null; }
-  const { data, error: sErr } = await supabase.storage.from("media").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-  if (sErr || !data) { toast.error("Upload failed"); return null; }
-  return data.signedUrl;
+  if (!ALLOWED.includes(file.type)) { toast.error("Only JPG, PNG or WEBP images are allowed"); return null; }
+  if (file.size > 5 * 1024 * 1024) { toast.error("Image is too large (max 5MB)"); return null; }
+  const { data: { session } } = await supabase.auth.getSession();
+  const body = new FormData();
+  body.append("file", file);
+  try {
+    const res = await fetch("/api/upload", { method: "POST", body, headers: { Authorization: `Bearer ${session?.access_token ?? ""}` } });
+    const json = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+    if (!res.ok || !json.url) { toast.error(json.error ?? "Upload failed"); return null; }
+    toast.success("Image uploaded — click Save to keep it");
+    return json.url;
+  } catch {
+    toast.error("Upload failed. Check your connection.");
+    return null;
+  }
 }
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {

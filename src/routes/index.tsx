@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { getSiteData, type SiteData } from "@/lib/site.functions";
 import { toEmbedUrl } from "@/lib/sanitize";
+import logoAsset from "@/assets/clipset-logo.png.asset.json";
 
 const siteQuery = queryOptions({ queryKey: ["site"], queryFn: () => getSiteData() });
 
@@ -89,7 +90,8 @@ function Header({ data }: { data: SiteData }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/70 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
-        <a href="#home" className="font-display text-xl font-bold tracking-tight">
+        <a href="#home" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
+          <img src={logoAsset.url} alt={s.logo_text || "Logo"} className="h-10 w-auto" />
           {s.logo_text}
           {s.logo_text && <span className="text-primary">.</span>}
         </a>
