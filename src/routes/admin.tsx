@@ -208,7 +208,7 @@ function cleanRow(fields: Field[], row: Row) {
     const v = row[f.key];
     if (f.type === "tags") out[f.key] = (Array.isArray(v) ? v : []).map((t) => cleanText(String(t), 40)).filter(Boolean);
     else if (f.type === "url") out[f.key] = cleanUrl(String(v ?? ""));
-    else if (f.type === "image") out[f.key] = String(v ?? "").startsWith("https://") ? String(v) : "";
+    else if (f.type === "image") out[f.key] = /^(https:\/\/|\/images\/)/.test(String(v ?? "")) ? String(v) : "";
     else out[f.key] = cleanText(String(v ?? ""), f.type === "textarea" ? 2000 : 200);
   }
   return out;
