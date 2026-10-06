@@ -24,13 +24,13 @@ export type Stat = { value: string; label: string };
 
 export const getSiteData = createServerFn({ method: "GET" }).handler(async () => {
   const sb = publicClient();
-  const [settings, hero, portfolio, services, clients, team] = await Promise.all([
+  const [settings, hero, portfolio, services, clients, gallery] = await Promise.all([
     sb.from("site_settings").select("logo_text,nav_items,social_links,cta_heading,cta_subtext,whatsapp,email,footer_text,copyright_text,popup_heading,popup_subtext,popup_link,popup_interval_sec,popup_duration_sec").eq("id", 1).maybeSingle(),
     sb.from("hero").select("headline,subtext,cta1_label,cta1_link,cta2_label,cta2_link,stats").eq("id", 1).maybeSingle(),
     sb.from("portfolio_items").select("id,title,subtitle,thumbnail_url,video_url").order("sort_order"),
     sb.from("services").select("id,title,description,tags").order("sort_order"),
     sb.from("clients").select("id,name,logo_url").order("sort_order"),
-    sb.from("team_members").select("id,name,role,photo_url").order("sort_order"),
+    sb.from("gallery_items").select("id,photo_url").neq("photo_url", "").order("sort_order"),
   ]);
   const s = settings.data;
   const h = hero.data;
@@ -42,7 +42,7 @@ export const getSiteData = createServerFn({ method: "GET" }).handler(async () =>
     portfolio: portfolio.data ?? [],
     services: services.data ?? [],
     clients: clients.data ?? [],
-    team: team.data ?? [],
+    gallery: gallery.data ?? [],
   };
 });
 

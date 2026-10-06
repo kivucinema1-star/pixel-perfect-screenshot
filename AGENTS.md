@@ -11,7 +11,7 @@
 
 # Project rules
 
-- All public site content comes from Lovable Cloud tables (site_settings, hero, portfolio_items, services, clients, team_members); never hardcode demo copy — empty collections render nothing on the public site.
+- All public site content comes from Lovable Cloud tables (site_settings, hero, portfolio_items, services, clients, gallery_items); never hardcode demo copy — empty collections render nothing on the public site.
 - Public data is read through the `getSiteData` server function with a publishable client — keeps SSR working without exposing admin data.
 - Admin access is gated by the `user_roles` table + `has_role()` in RLS; the default admin is created idempotently by `ensureDefaultAdmin` because migrations cannot write auth users.
 - Admin image uploads go through the admin-only `POST /api/upload` route, which forwards to Cloudinary with an unsigned preset (config in env vars), so no credentials reach the browser.

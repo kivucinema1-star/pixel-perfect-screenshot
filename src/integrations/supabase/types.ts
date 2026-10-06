@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_items: {
+        Row: {
+          created_at: string
+          id: string
+          photo_url: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo_url?: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo_url?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       hero: {
         Row: {
           cta1_label: string
