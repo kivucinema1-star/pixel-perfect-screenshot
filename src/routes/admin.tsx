@@ -131,7 +131,7 @@ function Dashboard({ email }: { email: string }) {
       <main className="mx-auto max-w-6xl px-4 py-8">
         <Tabs defaultValue="hero">
           <TabsList className="mb-6 flex h-auto flex-wrap">
-            {["hero", "portfolio", "services", "clients", "team", "settings"].map((t) => (
+            {["hero", "portfolio", "services", "clients", "gallery", "settings"].map((t) => (
               <TabsTrigger key={t} value={t} className="capitalize">{t}</TabsTrigger>
             ))}
           </TabsList>
@@ -152,9 +152,9 @@ function Dashboard({ email }: { email: string }) {
               { key: "name", label: "Name" }, { key: "logo_url", label: "Logo (optional)", type: "image" },
             ]} />
           </TabsContent>
-          <TabsContent value="team">
-            <CollectionEditor table="team_members" empty="No team members yet." fields={[
-              { key: "name", label: "Name" }, { key: "role", label: "Role" }, { key: "photo_url", label: "Photo", type: "image" },
+          <TabsContent value="gallery">
+            <CollectionEditor table="gallery_items" empty="No gallery photos yet." fields={[
+              { key: "photo_url", label: "Photo", type: "image" },
             ]} />
           </TabsContent>
           <TabsContent value="settings"><SettingsEditor /></TabsContent>
@@ -206,7 +206,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
 
 /* ---------- collections ---------- */
 type Field = { key: string; label: string; type?: "text" | "textarea" | "url" | "image" | "tags" };
-type Table = "portfolio_items" | "services" | "clients" | "team_members";
+type Table = "portfolio_items" | "services" | "clients" | "gallery_items";
 type Row = Record<string, unknown> & { id: string; sort_order: number };
 
 function cleanRow(fields: Field[], row: Row) {
@@ -406,7 +406,7 @@ function SettingsEditor() {
     <div className="grid gap-4 rounded-xl border border-border bg-card p-6 md:grid-cols-2">
       <TextField label="Logo text" value={s.logo_text} onChange={set("logo_text")} />
       <div />
-      <PairList label="Navigation (link e.g. #portfolio, #services, #clients, #team, #contact)" items={s.nav_items} keys={[["label", "Label"], ["href", "#section"]]} onChange={(nav_items) => setS({ ...s, nav_items })} />
+      <PairList label="Navigation (link e.g. #portfolio, #services, #clients, #gallery, #contact)" items={s.nav_items} keys={[["label", "Label"], ["href", "#section"]]} onChange={(nav_items) => setS({ ...s, nav_items })} />
       <PairList label="Social links" items={s.social_links} keys={[["platform", "Instagram, YouTube…"], ["url", "https://…"]]} onChange={(social_links) => setS({ ...s, social_links })} />
       <TextField label="CTA heading" value={s.cta_heading} onChange={set("cta_heading")} />
       <TextField label="CTA subtext" value={s.cta_subtext} onChange={set("cta_subtext")} />

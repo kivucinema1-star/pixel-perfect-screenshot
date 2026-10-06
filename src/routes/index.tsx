@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
-  Home, Info, Film, Images, Mail, Briefcase, Users, Instagram, Youtube, Facebook, Linkedin, Twitter,
+  Home, Info, Film, Images, Mail, Briefcase, Instagram, Youtube, Facebook, Linkedin, Twitter,
   Globe, MessageCircle, Play, X, Circle,
 } from "lucide-react";
 import { getSiteData, type SiteData } from "@/lib/site.functions";
@@ -41,7 +41,7 @@ function navIcon(label: string) {
   if (l.includes("gallery")) return Images;
   if (l.includes("contact")) return Mail;
   if (l.includes("service")) return Briefcase;
-  if (l.includes("team")) return Users;
+  if (l.includes("gallery")) return Images;
   return Circle;
 }
 function socialIcon(p: string) {
@@ -65,7 +65,7 @@ function Index() {
       <Portfolio data={data} />
       <Services data={data} />
       <Clients data={data} />
-      <Team data={data} />
+      <Gallery data={data} />
       <Footer data={data} />
       <HirePopup data={data} />
       {nav.length > 0 && (
@@ -243,19 +243,15 @@ function Clients({ data }: { data: SiteData }) {
   );
 }
 
-function Team({ data }: { data: SiteData }) {
-  if (!data.team.length) return null;
+function Gallery({ data }: { data: SiteData }) {
+  if (!data.gallery.length) return null;
   return (
-    <section id="team" className="mx-auto max-w-7xl px-5 py-24">
-      <SectionTitle eyebrow="Team" title="The crew" />
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-        {data.team.map((m) => (
-          <div key={m.id}>
-            <div className="aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
-              {m.photo_url && <img src={m.photo_url} alt={m.name} loading="lazy" className="h-full w-full object-cover" />}
-            </div>
-            <h3 className="mt-4 font-semibold">{m.name}</h3>
-            <p className="text-sm text-muted-foreground">{m.role}</p>
+    <section id="gallery" className="mx-auto max-w-7xl px-5 py-24">
+      <SectionTitle eyebrow="Gallery" title="Behind the scenes" />
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+        {data.gallery.map((item, index) => (
+          <div key={item.id} className={`${index % 5 === 0 ? "md:col-span-2" : ""} aspect-[4/3] overflow-hidden rounded-lg bg-muted`}>
+            {item.photo_url && <img src={item.photo_url} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />}
           </div>
         ))}
       </div>
