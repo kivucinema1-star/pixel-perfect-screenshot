@@ -30,7 +30,7 @@ export const getSiteData = createServerFn({ method: "GET" }).handler(async () =>
     sb.from("portfolio_items").select("id,title,subtitle,thumbnail_url,video_url").order("sort_order"),
     sb.from("services").select("id,title,description,tags").order("sort_order"),
     sb.from("clients").select("id,name,logo_url").order("sort_order"),
-    sb.from("gallery_items").select("id,photo_url").order("sort_order"),
+    sb.from("gallery_items").select("id,photo_url").neq("photo_url", "").order("sort_order"),
   ]);
   const s = settings.data;
   const h = hero.data;
