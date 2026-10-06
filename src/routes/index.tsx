@@ -41,7 +41,6 @@ function navIcon(label: string) {
   if (l.includes("gallery")) return Images;
   if (l.includes("contact")) return Mail;
   if (l.includes("service")) return Briefcase;
-  if (l.includes("gallery")) return Images;
   return Circle;
 }
 function socialIcon(p: string) {
