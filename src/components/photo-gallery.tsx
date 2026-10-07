@@ -66,16 +66,16 @@ export function PhotoGallery({ photos }: { photos: Photo[] }) {
   const [selected, setSelected] = useState<number | null>(null);
   return (
     <Dialog open={selected !== null} onOpenChange={(open) => { if (!open) setSelected(null); }}>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-5">
+      <div className="columns-1 gap-3 sm:columns-2 md:columns-3 md:gap-5">
         {photos.map((photo, index) => (
           <Button
             key={photo.id}
             variant="ghost"
-            className="group aspect-[4/3] h-auto w-full overflow-hidden rounded-lg bg-muted p-0"
+            className="group mb-3 block h-auto w-full break-inside-avoid overflow-hidden rounded-lg bg-muted p-0 md:mb-5"
             aria-label={`Open gallery photo ${index + 1}`}
             onClick={() => setSelected(index)}
           >
-            <img src={photo.photo_url} alt={`Gallery photo ${index + 1}`} loading="lazy" className="h-full w-full object-contain" />
+            <img src={photo.photo_url} alt={`Gallery photo ${index + 1}`} loading="lazy" className="block h-auto w-full" />
           </Button>
         ))}
       </div>
