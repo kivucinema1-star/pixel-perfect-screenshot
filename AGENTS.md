@@ -16,3 +16,4 @@
 - Admin access is gated by the `user_roles` table + `has_role()` in RLS; the default admin is created idempotently by `ensureDefaultAdmin` because migrations cannot write auth users.
 - Admin image uploads go through the admin-only `POST /api/upload` route, which forwards to Cloudinary with an unsigned preset (config in env vars), so no credentials reach the browser.
 - Admin input is sanitized client-side (`src/lib/sanitize.ts`) before saving; URLs are restricted to http(s)/mailto/tel/anchors to prevent stored XSS.
+- Public gallery viewing uses a dedicated PhotoGallery component with Embla inside a Radix dialog so swipe navigation and focus management stay accessible.

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { getSiteData, type SiteData } from "@/lib/site.functions";
 import { toEmbedUrl } from "@/lib/sanitize";
+import { PhotoGallery } from "@/components/photo-gallery";
 
 const siteQuery = queryOptions({ queryKey: ["site"], queryFn: () => getSiteData() });
 
@@ -247,13 +248,7 @@ function Gallery({ data }: { data: SiteData }) {
   return (
     <section id="gallery" className="mx-auto max-w-7xl px-5 py-24">
       <SectionTitle eyebrow="Gallery" title="Behind the scenes" />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
-        {data.gallery.map((item, index) => (
-          <div key={item.id} className={`${index % 5 === 0 ? "md:col-span-2" : ""} aspect-[4/3] overflow-hidden rounded-lg bg-muted`}>
-            {item.photo_url && <img src={item.photo_url} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />}
-          </div>
-        ))}
-      </div>
+      <PhotoGallery photos={data.gallery} />
     </section>
   );
 }
@@ -279,6 +274,9 @@ function Footer({ data }: { data: SiteData }) {
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
         <div>{s.footer_text}</div>
         <div>{s.copyright_text}</div>
+         <a href="https://www.instagram.com/1chanel___/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-primary">
+           <Instagram className="h-4 w-4 shrink-0" />Developed by chanel
+         </a>
       </div>
     </footer>
   );
